@@ -18,7 +18,7 @@ def main():
 	dcMotor0.openWaitForAttachment(5000)
 	encoder0.openWaitForAttachment(5000)
 
-	dcMotor0.setTargetVelocity(0.1)
+	dcMotor0.setTargetVelocity(-0.1)
 
 	try:
 		input("Press Enter to Stop\n")
