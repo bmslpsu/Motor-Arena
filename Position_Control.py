@@ -12,7 +12,7 @@ class Position_Control:
 		self.iniVelocity = 0.1			#	initial velocity
 		self.samplingrate = 0.01		# 	samplingrate in (second)
 		self.numEncoderRead = 0
-		self.timemult = pow(10,3)		# 	millisecond
+		self.timemult = pow(10,4)		# 	millisecond
 		
 		self.timeval0 = int(time.clock()*self.timemult)
 		
@@ -21,7 +21,7 @@ class Position_Control:
 		self.dcMotor0 = DCMotor()
 		
 		self.degToCount()				# 	Load in desired position
-		self.writecsv()					#	Initial data file
+		self.inicsv()					#	Initial data file
 
 		self.encoder0.openWaitForAttachment(5000)
 		self.dcMotor0.openWaitForAttachment(5000)
@@ -41,25 +41,18 @@ class Position_Control:
 	
 		
 	def positionControl(self):
-		for ii in self.targetCount:
-			print(ii)
-			self.pid = PID(0.0015, 0.0003, 0.01, setpoint=ii)
-			error = abs(self.totcount - ii)
-			self.timeval1 = int(time.clock() * self.timemult)
-			while error >= 10:
-				while ((self.timeval1-self.timeval0) % 3000 != 0):
-					velocity = self.PIDposition(ii)
+		for self.ii in self.targetCount:
+			self.pid = PID(0.0015, 0.0003, 0.01, setpoint= self.ii)
+			error = abs(self.totcount - self.ii)
+			while (self.gettime() % 30000 != 0):
+				while error >= 10:
+					velocity = self.PIDposition()
 					self.dcMotor0.setTargetVelocity(velocity)
-					error = abs(self.totcount - ii)
-					#print (error)
-					self.timeval1 = int(time.clock() * self.timemult)
-					print(self.timeval1)
-			self.dcMotor0.setTargetVelocity(0)
+					error = abs(self.totcount - self.ii)
+					print (error)
+				self.dcMotor0.setTargetVelocity(0)
 
-
-
-
-	def PIDposition(self,targetposition):
+	def PIDposition(self):
 		velocity = self.pid(self.encoderread())
 		if 1 < velocity:
 			velocity = 1
@@ -70,8 +63,7 @@ class Position_Control:
 	def	encoderread(self):
 		self.totcount= self.encoder0.getPosition()
 		self.numEncoderRead=self.numEncoderRead+1
-		
-		#self.writer.writerow([self.numEncoderRead,])
+		self.writecsv(self.numEncoderRead,self.totcount)
 		return self.totcount
 	
 	def degToCount(self):
@@ -90,16 +82,21 @@ class Position_Control:
 					Angle[ii]=float(x)
 		return Angle
 		
-	def writecsv(self):
+	def inicsv(self):
 		with open('CSVWriting.csv', 'w') as file:
-			self.writer = csv.writer(file)
-			self.writer.writerow(["Num",'\t',"Time",'\t', "Count"])
+			self.writer = [csv.writer(file)]
+			self.writer[0].writerow(["Num",'\t',"Time",'\t', "Count"])
 	
-	def timers(self):
-		timeval0 = time.clock()
-		timeval1 = int(timeval0*pow(10,6))
-		print(timeval0)
-		print(timeval1)
+	def writecsv(self,numEncoderRead,totcount):
+		with open('CSVWriting.csv', 'w') as file:
+			self.writer = [csv.writer(file)]*numEncoderRead
+			self.writer[int(numEncoderRead)].writerow([numEncoderRead, '\t', "Time", '\t', totcount])
+	
+	def gettime(self):
+		timeval1 = int(time.clock() * self.timemult)
+		timedif = timeval1 - self.timeval0
+		print(timedif)
+		return timedif
 		
    
 		
