@@ -12,7 +12,7 @@ class Position_Control:
 		self.iniVelocity = 0.1			#	initial velocity
 		self.samplingrate = 0.01		# 	samplingrate in (second)
 		self.numEncoderRead = 0
-		self.timemult = pow(10,6)		# 	millisecond
+		self.timemult = pow(10,3)		# 	millisecond
 		
 		self.timeval0 = int(time.clock()*self.timemult)
 		
@@ -41,19 +41,22 @@ class Position_Control:
 	
 		
 	def positionControl(self):
-		self.timeval1 = int(time.clock()*self.timemult)
-		while (self.timeval1-self.timeval0)%1==0:
-			for self.ii in self.targetCount:
-				self.pid = PID(0.0015, 0.0003, 0.01, setpoint=self.ii)
-				error = abs(self.totcount - self.ii)
-				while error >= 10:
-					velocity = self.PIDposition(self.ii)
+		for ii in self.targetCount:
+			print(ii)
+			self.pid = PID(0.0015, 0.0003, 0.01, setpoint=ii)
+			error = abs(self.totcount - ii)
+			self.timeval1 = int(time.clock() * self.timemult)
+			while error >= 10:
+				while ((self.timeval1-self.timeval0) % 3000 != 0):
+					velocity = self.PIDposition(ii)
 					self.dcMotor0.setTargetVelocity(velocity)
-					error = abs(self.totcount - self.ii)
-					print (error)
-				self.dcMotor0.setTargetVelocity(0)
-				time.sleep(5)
-				
+					error = abs(self.totcount - ii)
+					#print (error)
+					self.timeval1 = int(time.clock() * self.timemult)
+					print(self.timeval1)
+			self.dcMotor0.setTargetVelocity(0)
+
+
 
 
 	def PIDposition(self,targetposition):
