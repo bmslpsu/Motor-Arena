@@ -42,17 +42,17 @@ class Position_Control:
 		
 	def positionControl(self):
 		self.timeval1 = int(time.clock()*self.timemult)
-		while (self.timeval1-self.timeval0)%1==0:
-			for self.ii in self.targetCount:
-				self.pid = PID(0.0015, 0.0003, 0.01, setpoint=self.ii)
+		#while (self.timeval1-self.timeval0)%1==0:
+		for self.ii in self.targetCount:
+			self.pid = PID(0.0015, 0.0003, 0.01, setpoint=self.ii)
+			error = abs(self.totcount - self.ii)
+			while error >= 10:
+				velocity = self.PIDposition(self.ii)
+				self.dcMotor0.setTargetVelocity(velocity)
 				error = abs(self.totcount - self.ii)
-				while error >= 10:
-					velocity = self.PIDposition(self.ii)
-					self.dcMotor0.setTargetVelocity(velocity)
-					error = abs(self.totcount - self.ii)
-					print (error)
-				self.dcMotor0.setTargetVelocity(0)
-				time.sleep(5)
+				print (error)
+			self.dcMotor0.setTargetVelocity(0)
+			time.sleep(5)
 				
 
 
