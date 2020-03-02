@@ -36,11 +36,6 @@ class Position_Control:
         self.dcMotor0.setTargetVelocity(self.iniVelocity)
         self.encoder0.setOnPositionChangeHandler(self.encoderread)
 
-        try:
-            input("Press Enter to Stop\n")
-        except (Exception, KeyboardInterrupt):
-            pass
-
         self.encoder0.close()
         self.dcMotor0.close()
 
@@ -74,9 +69,9 @@ class Position_Control:
         return velocity
 
     def encoderread(self,positionChange, timeChange, indexTriggered,test):
-        totcount = self.encoder0.getPosition()
+        self.totcount = self.encoder0.getPosition()
         self.numEncoderRead = self.numEncoderRead + 1
-        self.positionControl(totcount)
+        self.positionControl(self.totcount)
 
     def degToCount(self):
         angle = self.readcsv()
