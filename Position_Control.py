@@ -3,7 +3,7 @@ from Phidget22.Devices.DCMotor import *
 from Phidget22.Devices.Encoder import *
 from simple_pid import PID
 import time
-import csv
+import pandas
 
 class Position_Control:
 	def __init__(self):
@@ -12,9 +12,10 @@ class Position_Control:
 		self.iniVelocity = 0.1			#	initial velocity
 		self.samplingrate = 0.01		# 	samplingrate in (second)
 		self.numEncoderRead = 0
-		self.timemult = pow(10,4)		# 	millisecond
+		self.timemult = pow(10,3)		# 	millisecond
 		
 		self.timeval0 = int(time.clock()*self.timemult)
+
 		
 	def setup(self):
 		self.encoder0 = Encoder()
@@ -25,6 +26,8 @@ class Position_Control:
 
 		self.encoder0.openWaitForAttachment(5000)
 		self.dcMotor0.openWaitForAttachment(5000)
+
+		self.encoder0.setDataInterval(self.encoder0.getMinDataInterval())
 		
 		self.dcMotor0.setTargetVelocity(self.iniVelocity)
 		# self.encoder0.setOnPositionChangeHandler(self.positionControl)
@@ -41,19 +44,21 @@ class Position_Control:
 	
 		
 	def positionControl(self):
-		for self.ii in self.targetCount:
-			self.pid = PID(0.0015, 0.0003, 0.01, setpoint= self.ii)
-			error = abs(self.totcount - self.ii)
-			while (self.gettime() % 30000 != 0):
-				while error >= 10:
-					velocity = self.PIDposition()
-					self.dcMotor0.setTargetVelocity(velocity)
-					error = abs(self.totcount - self.ii)
-					print (error)
-				self.dcMotor0.setTargetVelocity(0)
+		for ii in self.targetCount:
+			self.pid = PID(0.0015, 0.0003, 0.01, setpoint= ii)
+			error = abs(self.totcount - ii)
+			while error >= 10:
+				#while (self.gettime() % 3000) != 0:
+				velocity = self.PIDposition()
+				self.dcMotor0.setTargetVelocity(velocity)
+				self.encoderread()
+				error = abs(self.totcount - ii)
+				time.sleep(self.encoder0.getMinDataInterval()/pow(10,5))
+			#self.dcMotor0.setTargetVelocity(0)
+			time.sleep(5)
 
 	def PIDposition(self):
-		velocity = self.pid(self.encoderread())
+		velocity = self.pid(self.totcount)
 		if 1 < velocity:
 			velocity = 1
 		elif -1 > velocity:
@@ -62,9 +67,9 @@ class Position_Control:
 	
 	def	encoderread(self):
 		self.totcount= self.encoder0.getPosition()
+		print(self.totcount)
 		self.numEncoderRead=self.numEncoderRead+1
-		self.writecsv(self.numEncoderRead,self.totcount)
-		return self.totcount
+		#self.writecsv(self.numEncoderRead,self.totcount)
 	
 	def degToCount(self):
 		angle = self.readcsv()
@@ -73,19 +78,13 @@ class Position_Control:
 			self.targetCount[ii]=int(angle[ii]*self.cpr/360)
 		
 	def readcsv(self):
-		with open('CSVReading.csv') as csvfile:
-			reader = csv.reader(csvfile, delimiter=',')
-			row = list(reader)
-			Angle=[0.0] * len(row)
-			for ii in range(0, len(row)):
-				for x in row[ii]:
-					Angle[ii]=float(x)
-		return Angle
+		reader = pandas.read_csv("CSVReading.csv",sep=',')
+		return reader.Angle
+
 		
 	def inicsv(self):
-		with open('CSVWriting.csv', 'w') as file:
-			self.writer = [csv.writer(file)]
-			self.writer[0].writerow(["Num",'\t',"Time",'\t', "Count"])
+		df = pandas.DataFrame(columns=['Time','Position'])
+		df.to_csv("CSVWriting.csv", index = False, header=True)
 	
 	def writecsv(self,numEncoderRead,totcount):
 		with open('CSVWriting.csv', 'w') as file:
@@ -95,7 +94,7 @@ class Position_Control:
 	def gettime(self):
 		timeval1 = int(time.clock() * self.timemult)
 		timedif = timeval1 - self.timeval0
-		print(timedif)
+		#print (timedif)
 		return timedif
 		
    
@@ -103,8 +102,4 @@ class Position_Control:
 if __name__ == '__main__':
 	main = Position_Control()
 	main.setup()
-	
-
-
-
 	
