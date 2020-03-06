@@ -15,3 +15,10 @@ Installation step
 6. For installing udev, cd into the unzipped phidget22 folder
 	run: sudo cp plat/linux/udev/99-libphidget22.rules /etc/udev/rules.d
 	reboost computer
+
+Libraries needed:
+	Phidget22
+	simple_pid
+	time
+	pandas
+	matplotlib
