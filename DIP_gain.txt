@@ -1,8 +1,12 @@
-sinewave 0.1 HZ 180: KP: 0.018 KI:0.1 KD: 1
+sinewave 0.1 HZ 180: KP: 0.01 KI:0.1 KD: 1
 sinewave 0.1 HZ 360: KP: 0.018 KI:0.1 KD: 1
 
-sinewave 0.5 HZ 180: KP: 0.01 KI:0.1 KD: 0.1
-sinewave 0.5 HZ 360: KP: 0.018 KI:0.1 KD: 1
+sinewave 0.5 HZ 180: KP: 0.009 KI:0.001 KD: 0.01
+sinewave 0.5 HZ 360: KP: 0.02 KI:0.001 KD: 0.02
 
 sinewave 1 HZ 180: KP: 0.01 KI:0.1 KD: 0.1
 sinewave 1 HZ 360: KP: 0.018 KI:0.1 KD: 1
+
+sinewave 0.1 HZ 40 deg: KP: 0.035 KI:0.01 KD: 0.3
+sinewave 0.5 HZ 40 deg: KP: 0.018 KI:0.005 KD: 0.025
+sinewave 1 HZ 40 deg: KP: 0.018 KI:0.005 KD: 0.025

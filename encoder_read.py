@@ -16,15 +16,17 @@ from Phidget22.Devices.Encoder import *
 class EncoderRead:
 
 	def __init__(self):
-		self.countprev = 4096
+		self.countprev = 324
 		self.inputA = 0
 		
-		encoder0 = Encoder()
-		encoder0.setOnPositionChangeHandler(self.onPositionChange)
-		encoder0.openWaitForAttachment(5000)
+		self.encoder0 = Encoder()
+		self.encoder0.setOnPositionChangeHandler(self.onPositionChange)
+		self.encoder0.openWaitForAttachment(5000)
+		self.encoder0.setDataInterval(self.encoder0.getMinDataInterval())
 	
-	def onPositionChange(self, inputA):
-		self.inputA = self.inputA + inputA
+	def onPositionChange(self, test1,test2,test3,test4):
+		self.totcount = self.encoder0.getPosition()
+		print(self.totcount)
 		# print("PositionChange: " + str(globalposition))
 		# print("TimeChange: " + str(timeChange))
 		# print("----------")

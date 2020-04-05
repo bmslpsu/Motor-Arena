@@ -10,9 +10,9 @@ import numpy
 class Position_Control:
     def __init__(self):
         self.cpr = 324                                      # Number of count per Revolution of Encoder
-        self.iniVelocity = 1                              # initial velocity
+        self.iniVelocity = 1                                # initial velocity
         self.samplingrate = 0.001                           # samplingrate of trajectory (second)
-        self.pid = PID(0.002, 0, 0.002, setpoint=0)           # PID control gain
+        self.pid = PID(0.015, 0.00001 , 0.0002, setpoint=0)           # PID control gain
 #=======================================================================================================================
         self.ii = 0
         self.totcount = 0                                   # Position Counter
@@ -28,6 +28,7 @@ class Position_Control:
         self.motorposition = [0]*(len(self.targetCount))    # Initialize the array to record data into .csv
         self.motortime = [0] * (len(self.targetCount))
         self.diffhist = [0] * (len(self.targetCount))       # Difference bwtween desired and actual motor position
+        self.velocity = [0] * (len(self.targetCount))
 
         self.encoder0.openWaitForAttachment(5000)           # Open Phidget Channel and wait for 5 second for data
         self.dcMotor0.openWaitForAttachment(5000)
@@ -52,12 +53,12 @@ class Position_Control:
         while (self.gettime() % 100) != 0:                  # Time Pulling, control the motor position every 0.001 second
             pass
         self.diffhist[self.ii] = self.totcount- target      # compute the difference between Desired and Actual Position
-
         velocity = self.PIDposition(self.diffhist[self.ii]) # Using PID to compute the required velocity
         self.dcMotor0.setTargetVelocity(velocity)           # set velocity between -1 to 1 to Phidget Motor driver
 
     def PIDposition(self,currentloca):
         velocity = self.pid(currentloca)                    # use PID library to compute velovity
+        self.velocity[self.ii] = velocity
         if 1 < velocity:                                    # Bound the velocity between -1 and 1
             velocity = 1
         elif -1 > velocity:
@@ -84,15 +85,15 @@ class Position_Control:
         return self.timedif
 
     def readcsv(self):
-        reader = pandas.read_csv("/home/george/Desktop/Testing_Figure/Trajectory/1Hz_Since_360deg.csv", sep=',')    # read target angle as .csv file
+        reader = pandas.read_csv("/home/george/Desktop/Testing_Figure/Trajectory/NewTraj/0.5Hz_Sine_40deg.csv", sep=',')    # read target angle as .csv file
         return reader.Angle
 
     def writecsv(self):
         table = [0]*(len(self.motortime)+1)                 # Create a table to store time spend, motor position history and difference between target and actual position
-        table[0] = ["Time",'\t',"Position",'\t',"Error"]    # the heading for each column
+        table[0] = ["Time",'\t',"Position",'\t',"AnalogVolt",'\t',"Error"]    # the heading for each column
         for ii in range(1,len(table)):                      # Import information into each cell of table array
             time = self.motortime[ii-1]-self.motortime[1]
-            table[ii] = [time,'\t',self.motorposition[ii-1],'\t',self.diffhist[ii-1]]
+            table[ii] = [time,'\t',self.motorposition[ii-1],'\t',self.velocity[ii-1],'\t',self.diffhist[ii-1]]
         df = pandas.DataFrame(table)                        # convert table array into pandas dataFrame
         df.to_csv("CSVWriting.csv", index=False, header=False) # write into .csv file named CSVWriting.csv
 
@@ -104,12 +105,17 @@ class Position_Control:
         for ii in range (len(self.motortime)):
             tt[ii] = (self.motortime[ii]-self.motortime[1])/self.timemult
 
-        plt.scatter(x, self.targetCount, c='b', s=10)
-        plt.scatter(tt, self.motorposition, c='y', s=10)
-        plt.title('1Hz_Since_360deg')
-        plt.legend(['Target','Actual'])
+        plt.plot(x, self.targetCount,'b-')
+        plt.plot(tt, self.motorposition,'y-')
+        plt.title('0.1Hz_Sine_40deg', fontsize=25)
+        plt.legend(['Target', 'Actual'], fontsize=25,loc = 'upper right')
         plt.xlabel('Time')
         plt.ylabel('Count')
+
+        plt2 = plt.twinx()
+        plt2.set_ylabel('Voltage Output(V)', color='red')
+        plt2.tick_params(axis='y', labelcolor='red')
+        plt2.plot(tt, self.velocity, 'r-')
         plt.show()
 
 if __name__ == '__main__':
