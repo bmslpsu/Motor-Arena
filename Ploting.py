@@ -10,8 +10,8 @@ class Ploting:
         self.timemult = 100000
 
     def readfile(self):
-        self.readertra = pandas.read_csv("/home/george/Desktop/Testing_Figure/Trajectory/NewTraj/0.5Hz_Sine_40deg.csv", sep=',')
-        self.readerhist = pandas.read_csv("CSVWriting.csv", sep=',')
+        self.readertra  = pandas.read_csv("/home/george/catkin_ws/src/Motor-Arena/sampleTrajectory/PositionControl/0.1Hz_Sine_40deg.csv", sep=',')
+        self.readerhist = pandas.read_csv("/home/george/catkin_ws/src/Motor-Arena/sampleTrajectory/PositionControl/HISTORY_0.1Hz_Sine_40deg.csv", sep=',')
 
     def positionPloting(self):
         self.motorTime = self.readerhist.Time
@@ -27,7 +27,7 @@ class Ploting:
 
         plt.plot(x, self.trajectory,'b-')
         plt.plot(self.motorTime, self.motorPosition,'y-')
-        plt.title('0.5Hz_Sine_40deg', fontsize=25)
+        plt.title('0.1Hz_Sine_40deg', fontsize=25)
         plt.legend(['Target','Actual'], fontsize=25,loc = 'upper right')
         plt.xlabel('Time')
         plt.ylabel('Count')
@@ -36,6 +36,7 @@ class Ploting:
         plt2.set_ylabel('Voltage Output(V)', color = 'red')
         plt2.tick_params(axis='y', labelcolor='red')
         plt2.plot(self.motorTime,self.motorPWM,'r-')
+        plt2.legend(['PWM'], fontsize=25, loc='lower right')
         plt.show()
 
     def velocityPloting(self):

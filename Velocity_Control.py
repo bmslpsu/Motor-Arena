@@ -12,10 +12,10 @@ class Velocity_Control:
         self.cpr = 324.0                                    # Number of count per Revolution of Encoder
         self.iniVelocity = 0.25                             # initial velocity
         self.samplingrate = 0.001                           # sampling rate of trajectory (second)
-        self.pid = PID(0.01 , 0 , 0, setpoint=0)            # PID control gain
+        self.pid = PID(0.02 , 0.01 , 0.001, setpoint=0)            # PID control gain
         self.numstored = 25                                 # Number of samples for moving average, since the time.time() does not accurated enough during short period of time
-        self.trajectoryRoot = "sampleTrajectory/VelocityControl/0.1Hz_Sine_250rpm.csv"
-        self.motorHistoryRoot = "CSVWriting.csv"
+        self.trajectoryRoot = "sampleTrajectory/VelocityControl/1Hz_Sine_50rpm.csv"
+        self.motorHistoryRoot = "sampleTrajectory/VelocityControl/HISTORY_1Hz_Sine_50rpm.csv"
 #=======================================================================================================================
         self.ii = 0                                         # Accumulated number of trajectory passed
         self.RPMDiff = 0                                    # Different between current velocity VS desired velocity (RPM)
@@ -122,7 +122,7 @@ class Velocity_Control:
 
         plt.plot(x, self.trajectory, 'b-')
         plt.plot(self.motorTime, self.motorRPM, 'y-')
-        plt.title('0.1Hz_Sine_250RPM', fontsize=25)
+        plt.title('1Hz_Sine_50RPM', fontsize=25)
         plt.legend(['Target', 'Actual'], fontsize=25, loc='upper right')
         plt.xlabel('Time')
         plt.ylabel('RPM')

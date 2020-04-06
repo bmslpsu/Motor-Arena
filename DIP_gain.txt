@@ -1,12 +1,18 @@
-sinewave 0.1 HZ 180: KP: 0.01 KI:0.1 KD: 1
-sinewave 0.1 HZ 360: KP: 0.018 KI:0.1 KD: 1
+Position_Control
+sinewave 0.1 HZ 180 deg: KP: 0.01 KI:0.001 KD: 0.0001
+sinewave 0.1 HZ 360 deg: KP: 0.001 KI:0.1 KD: 0.0002
 
-sinewave 0.5 HZ 180: KP: 0.009 KI:0.001 KD: 0.01
-sinewave 0.5 HZ 360: KP: 0.02 KI:0.001 KD: 0.02
+sinewave 0.5 HZ 180 deg: KP: 0.009 KI:0.001 KD: 0.01
+sinewave 0.5 HZ 360 deg: KP: 0.02 KI:0.001 KD: 0.02
 
-sinewave 1 HZ 180: KP: 0.01 KI:0.1 KD: 0.1
-sinewave 1 HZ 360: KP: 0.018 KI:0.1 KD: 1
+sinewave 1 HZ 180 deg: KP: 0.01 KI:0.1 KD: 0.1
+sinewave 1 HZ 360 deg: KP: 0.018 KI:0.1 KD: 1
 
 sinewave 0.1 HZ 40 deg: KP: 0.035 KI:0.01 KD: 0.3
-sinewave 0.5 HZ 40 deg: KP: 0.018 KI:0.005 KD: 0.025
-sinewave 1 HZ 40 deg: KP: 0.018 KI:0.005 KD: 0.025
+sinewave 0.5 HZ 40 deg: KP: 0.015 KI:0.01 KD: 0.0001
+sinewave 1 HZ 40 deg: KP:0.005 KI:0.01 KD: 0.001
+
+
+Velocity_Control
+sinewave 0.1 HZ 250RPM: KP:0.01 KI:0.02 KD: 0.0001
+sinewave 0.5 HZ 250RPM: KP:0.02 KI:0.01 KD: 0.001

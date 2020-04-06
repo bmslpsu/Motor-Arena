@@ -12,9 +12,9 @@ class Position_Control:
         self.cpr = 324                                          # Number of count per Revolution of Encoder
         self.iniVelocity = 0.25                                 # initial velocity
         self.samplingrate = 0.001                               # samplingrate of trajectory (second)
-        self.pid = PID(0.015, 0.00001 , 0.0002, setpoint=0)     # PID control gain
-        self.trajectoryRoot = "sampleTrajectory/PositionControl/0.5Hz_Sine_40deg.csv" # Desired Trajectory Root
-        self.motorHistoryRoot = "CSVWriting.csv"                # History Storing Root
+        self.pid = PID(0.005, 0.01 , 0.001, setpoint=0)     # PID control gain
+        self.trajectoryRoot = "sampleTrajectory/PositionControl/1Hz_Sine_40deg.csv" # Desired Trajectory Root
+        self.motorHistoryRoot = "sampleTrajectory/PositionControl/HISTORY_1Hz_Sine_40deg.csv"                # History Storing Root
 #=======================================================================================================================
         self.ii = 0
         self.encoderCount = 0                                   # Position Counter
@@ -108,15 +108,16 @@ class Position_Control:
 
         plt.plot(x, self.targetCount,'b-')
         plt.plot(self.motorTime, self.motorPosition,'y-')
-        plt.title('0.1Hz_Sine_40deg', fontsize=25)
+        plt.title('1Hz_Sine_40deg', fontsize=25)
         plt.legend(['Target', 'Actual'], fontsize=25,loc = 'upper right')
         plt.xlabel('Time')
         plt.ylabel('Count')
 
         plt2 = plt.twinx()
-        plt2.set_ylabel('Voltage Output(V)', color='red')
+        plt2.set_ylabel('PWM', color='red')
         plt2.tick_params(axis='y', labelcolor='red')
         plt2.plot(self.motorTime, self.analogOut, 'r-')
+        plt2.legend(['PWM'], fontsize=25, loc='lower right')
         plt.show()
 
 if __name__ == '__main__':
