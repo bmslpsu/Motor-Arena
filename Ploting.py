@@ -10,8 +10,8 @@ class Ploting:
         self.timemult = 100000
 
     def readfile(self):
-        self.readertra  = pandas.read_csv("/home/george/catkin_ws/src/Motor-Arena/sampleTrajectory/PositionControl/0.1Hz_Sine_40deg.csv", sep=',')
-        self.readerhist = pandas.read_csv("/home/george/catkin_ws/src/Motor-Arena/sampleTrajectory/PositionControl/HISTORY_0.1Hz_Sine_40deg.csv", sep=',')
+        self.readertra  = pandas.read_csv("sampleTrajectory/VelocityControl/1.5Hz_Step_100rpm.csv", sep=',')
+        self.readerhist = pandas.read_csv("sampleTrajectory/VelocityControl/HISTORY_1.5Hz_Step_100rpm.csv", sep=',')
 
     def positionPloting(self):
         self.motorTime = self.readerhist.Time
@@ -48,25 +48,25 @@ class Ploting:
 
         self.trajectory = [0] * len(self.readertra)
         for ii in range(0, len(self.readertra)):
-            self.trajectory[ii] = int(self.readertra.Velocity[ii] * self.cpr / 360)
+            self.trajectory[ii] = self.readertra.Velocity[ii]
 
         x = numpy.linspace(0, 10, 10000)
 
         plt.plot(x, self.trajectory,'b-')
         plt.plot(self.motorTime, self.motorRPM,'y-')
-        plt.title('0.1Hz_Sine_250RPM', fontsize=25)
+        plt.title('1.5Hz_Step_100RPM', fontsize=25)
         plt.legend(['Target','Actual'], fontsize=25,loc = 'upper right')
         plt.xlabel('Time')
         plt.ylabel('RPM')
 
-        plt2 = plt.twinx()
-        plt2.set_ylabel('PWM', color = 'red')
-        plt2.tick_params(axis='y', labelcolor='red')
-        plt2.plot(self.motorTime,self.motorAnalog,'r-')
-        plt2.legend(['PWM'], fontsize=25, loc='lower right')
+        #plt2 = plt.twinx()
+        #plt2.set_ylabel('PWM', color = 'red')
+        #plt2.tick_params(axis='y', labelcolor='red')
+        #plt2.plot(self.motorTime,self.motorAnalog,'r-')
+        #plt2.legend(['PWM'], fontsize=25, loc='lower right')
         plt.show()
 
 if __name__ == '__main__':
     main = Ploting()
     main.readfile()
-    main.positionPloting()
+    main.velocityPloting()
