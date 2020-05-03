@@ -12,7 +12,7 @@ class Velocity_Control:
         self.cpr = 324.0                                    # Number of count per Revolution of Encoder
         self.iniVelocity = 0.25                             # initial velocity
         self.samplingrate = 0.001                           # sampling rate of trajectory (second)
-        self.pid = PID(0.01 , 0.008665 , 0.0015, setpoint=0)            # PID control gain
+        self.pid = PID(0.01 , 0.00855 , 0.00128, setpoint=0)            # PID control gain
         self.numstored = 25                                 # Number of samples for moving average, since the time.time() does not accurated enough during short period of time
         self.trajectoryRoot = "sampleTrajectory/VelocityControl/1.5Hz_Step_100rpm.csv"
         self.motorHistoryRoot = "sampleTrajectory/VelocityControl/HISTORY_1.5Hz_Step_100rpm.csv"
@@ -127,11 +127,11 @@ class Velocity_Control:
         plt.xlabel('Time')
         plt.ylabel('RPM')
 
-        #plt2 = plt.twinx()
-        #plt2.set_ylabel('PWM', color='red')
-        #plt2.tick_params(axis='y', labelcolor='red')
-        #plt2.plot(self.motorTime, self.motorAnalogOut, 'r-')
-        #plt2.legend(['PWM'], fontsize=25, loc='lower right')
+        plt2 = plt.twinx()
+        plt2.set_ylabel('PWM', color='red')
+        plt2.tick_params(axis='y', labelcolor='red')
+        plt2.plot(self.motorTime, self.motorAnalogOut, 'r-')
+        plt2.legend(['PWM'], fontsize=25, loc='lower right')
         plt.show()
 
 if __name__ == '__main__':
